@@ -28,7 +28,6 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.opensphere.geometry.algorithm.ConcaveHull;
-import org.opensphere.openjump.i18n.I18NPlug;
 
 import com.vividsolutions.jump.I18N;
 import com.vividsolutions.jump.feature.AttributeType;
@@ -47,7 +46,6 @@ import com.vividsolutions.jump.workbench.plugin.ThreadedPlugIn;
 import com.vividsolutions.jump.workbench.ui.ErrorDialog;
 import com.vividsolutions.jump.workbench.ui.GUIUtil;
 import com.vividsolutions.jump.workbench.ui.MultiInputDialog;
-import com.vividsolutions.jump.workbench.ui.plugin.FeatureInstaller;
 
 /** 
  * Concave hull plugin.
@@ -55,21 +53,25 @@ import com.vividsolutions.jump.workbench.ui.plugin.FeatureInstaller;
  * @author Eric Grosso
  *
  */
+// 1.1.0 (2021-08-15) refactoring for new i18n and contextualization
+// 1.0.0 (2021-04-20) migration to OpenJUMP2
 public class ConcaveHullPlugin extends AbstractPlugIn implements ThreadedPlugIn {
 
 	////////////////////////////////////////////////////////////////////////////////////
 	// internationalisation
-	
-	private final static String MENU = I18N.get("ui.MenuNames.TOOLS");
-	private final static String MENU_SUBTITLE = I18N.get("ui.MenuNames.TOOLS.GENERATE");
-	private final static String TITLE = I18NPlug.getI18N("plugin.ConcaveHullPlugin.title");
-	private final static String DESCRIPTION = I18NPlug.getI18N("plugin.ConcaveHullPlugin.description");
 
-	private final static String LAYER = I18NPlug.getI18N("plugin.ConcaveHullPlugin.layer");
-	private final static String THRESHOLD = I18NPlug.getI18N("plugin.ConcaveHullPlugin.threshold");
+	private final static  I18N i18n = I18N.getInstance("org.opensphere.openjump");
 	
-	private final static String ERROR = I18NPlug.getI18N("error");
-	private final static String EMPTY = I18NPlug.getI18N("error.emptyCollection");
+	private final static String MENU = I18N.JUMP.get("ui.MenuNames.TOOLS");
+	private final static String MENU_SUBTITLE = I18N.JUMP.get("ui.MenuNames.TOOLS.GENERATE");
+	private final static String TITLE = i18n.get("plugin.ConcaveHullPlugin.title");
+	private final static String DESCRIPTION = i18n.get("plugin.ConcaveHullPlugin.description");
+
+	private final static String LAYER = i18n.get("plugin.ConcaveHullPlugin.layer");
+	private final static String THRESHOLD = i18n.get("plugin.ConcaveHullPlugin.threshold");
+	
+	private final static String ERROR = i18n.get("error");
+	private final static String EMPTY = i18n.get("error.emptyCollection");
 	
 	////////////////////////////////////////////////////////////////////////////////////
 
@@ -85,11 +87,10 @@ public class ConcaveHullPlugin extends AbstractPlugIn implements ThreadedPlugIn 
 	 */
 	@Override
 	public void initialize(PlugInContext context) {
-		FeatureInstaller featureInstaller = new FeatureInstaller(context.getWorkbenchContext());
-		featureInstaller.addMainMenuPlugin(
+		context.getFeatureInstaller().addMainMenuPlugin(
 				this,
 				new String[] { MENU , MENU_SUBTITLE },
-				TITLE,
+				TITLE + "...",
 				false,
 				null,
 				new MultiEnableCheck()
